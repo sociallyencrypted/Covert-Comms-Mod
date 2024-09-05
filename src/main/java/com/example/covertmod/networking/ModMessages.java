@@ -1,7 +1,7 @@
 package com.example.covertmod.networking;
 
 import com.example.covertmod.CovertMod;
-import com.example.covertmod.networking.packet.HelloWorldC2SPacket;
+import com.example.covertmod.networking.packet.CovertDataC2SPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.*;
 
@@ -22,10 +22,10 @@ public class ModMessages {
                 .serverAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
                 .simpleChannel();
 
-        instance.messageBuilder(HelloWorldC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
-                .decoder(HelloWorldC2SPacket::new)
-                .encoder(HelloWorldC2SPacket::toBytes)
-                .consumerMainThread(HelloWorldC2SPacket::handle)
+        instance.messageBuilder(CovertDataC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(CovertDataC2SPacket::new)
+                .encoder(CovertDataC2SPacket::toBytes)
+                .consumerMainThread(CovertDataC2SPacket::handle)
                 .add();
     }
 

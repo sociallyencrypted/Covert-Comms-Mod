@@ -11,15 +11,15 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class HelloWorldC2SPacket {
+public class CovertDataC2SPacket {
     private final String fileData;
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public HelloWorldC2SPacket(String fileData) {
+    public CovertDataC2SPacket(String fileData) {
         this.fileData = fileData;
     }
 
-    public HelloWorldC2SPacket(FriendlyByteBuf buf) {
+    public CovertDataC2SPacket(FriendlyByteBuf buf) {
         this.fileData = buf.readUtf(32767);
     }
 
@@ -40,7 +40,6 @@ public class HelloWorldC2SPacket {
     private void writeFileData(String data) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("server-side-file.txt", true))) {
             writer.write(data);
-            writer.newLine();
             LOGGER.info("Wrote {} bytes to file", data.length());
         } catch (IOException e) {
             LOGGER.error("Error writing data to file: {}", e.getMessage());

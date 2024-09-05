@@ -1,7 +1,7 @@
 package com.example.covertmod.utils;
 
 import com.example.covertmod.networking.ModMessages;
-import com.example.covertmod.networking.packet.HelloWorldC2SPacket;
+import com.example.covertmod.networking.packet.CovertDataC2SPacket;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
@@ -31,7 +31,7 @@ public class FifoReaderThread extends Thread {
             while (running && (bytesRead = inputStream.read(buffer)) != -1) {
                 LOGGER.info("Read {} bytes from FIFO", bytesRead);
                 String chunk = new String(buffer, 0, bytesRead);
-                ModMessages.sendToServer(new HelloWorldC2SPacket(chunk));
+                ModMessages.sendToServer(new CovertDataC2SPacket(chunk));
                 //noinspection BusyWait
                 Thread.sleep(DELAY_PER_CHUNK_MS);
             }

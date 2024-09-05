@@ -31,7 +31,6 @@ public class HelloWorldC2SPacket {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null) {
-                LOGGER.info("Received {} bytes from client", this.fileData.length());
                 player.sendSystemMessage(Component.translatable("Bytes read: " + this.fileData.length()));
                 writeFileData(this.fileData);
             }
@@ -42,7 +41,7 @@ public class HelloWorldC2SPacket {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("server-side-file.txt", true))) {
             writer.write(data);
             writer.newLine();
-            LOGGER.info("Wrote data to file: {}", data);
+            LOGGER.info("Wrote {} bytes to file", data.length());
         } catch (IOException e) {
             LOGGER.error("Error writing data to file: {}", e.getMessage());
         }

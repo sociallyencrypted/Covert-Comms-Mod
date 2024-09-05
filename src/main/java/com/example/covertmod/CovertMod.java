@@ -47,7 +47,7 @@ public class CovertMod {
      *
      * @param event the common setup event
      */
-    private void commonSetup(final FMLCommonSetupEvent event) {
+    void commonSetup(final FMLCommonSetupEvent event) {
         // Register mod messages
         event.enqueueWork(ModMessages::register);
         LOGGER.info("HELLO FROM COMMON SETUP");
@@ -59,7 +59,7 @@ public class CovertMod {
      *
      * @param event the client setup event
      */
-    private void clientSetup(final FMLClientSetupEvent event) {
+    void clientSetup(final FMLClientSetupEvent event) {
         // Register client events
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         LOGGER.info("HELLO FROM CLIENT SETUP");

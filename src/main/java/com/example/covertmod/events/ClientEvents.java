@@ -63,7 +63,7 @@ public class ClientEvents {
      * Starts the FIFO reader thread.
      * If the thread is already running, logs a warning message.
      */
-    private static void startFifoReaderThread() {
+    static void startFifoReaderThread() {
         if (fifoReaderThread != null) {
             LOGGER.warn("FIFO reader thread already running");
             return;
@@ -77,7 +77,7 @@ public class ClientEvents {
      * Stops the FIFO reader thread.
      * If the thread is not running, does nothing.
      */
-    private static void stopFifoReaderThread() {
+    static void stopFifoReaderThread() {
         LOGGER.info("Stopping FIFO reader thread");
         if (fifoReaderThread != null) {
             fifoReaderThread.stopReading();

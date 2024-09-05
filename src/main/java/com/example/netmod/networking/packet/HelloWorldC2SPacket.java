@@ -1,9 +1,11 @@
 package com.example.netmod.networking.packet;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.network.CustomPayloadEvent;
+import org.slf4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -11,6 +13,7 @@ import java.io.IOException;
 
 public class HelloWorldC2SPacket {
     private final String fileData;
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public HelloWorldC2SPacket(String fileData) {
         this.fileData = fileData;
@@ -28,7 +31,7 @@ public class HelloWorldC2SPacket {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null) {
-                System.out.println("Bytes read: " + this.fileData.length());
+                LOGGER.info("Received {} bytes from client", this.fileData.length());
                 player.sendSystemMessage(Component.translatable("Bytes read: " + this.fileData.length()));
                 writeFileData(this.fileData);
             }
@@ -39,9 +42,9 @@ public class HelloWorldC2SPacket {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("server-side-file.txt", true))) {
             writer.write(data);
             writer.newLine();
-            System.out.println("Written to file: " + data);
+            LOGGER.info("Wrote data to file: {}", data);
         } catch (IOException e) {
-            System.err.println("Error writing file: " + e.getMessage());
+            LOGGER.error("Error writing data to file: {}", e.getMessage());
         }
     }
 }

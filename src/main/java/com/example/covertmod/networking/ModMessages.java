@@ -1,7 +1,7 @@
 package com.example.covertmod.networking;
 
 import com.example.covertmod.CovertMod;
-import com.example.covertmod.networking.packet.CovertDataC2SPacket;
+import com.example.covertmod.networking.packets.CovertDataC2SPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.*;
 

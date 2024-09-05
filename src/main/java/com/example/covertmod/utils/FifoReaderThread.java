@@ -1,7 +1,7 @@
 package com.example.covertmod.utils;
 
 import com.example.covertmod.networking.ModMessages;
-import com.example.covertmod.networking.packet.CovertDataC2SPacket;
+import com.example.covertmod.networking.packets.CovertDataC2SPacket;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 

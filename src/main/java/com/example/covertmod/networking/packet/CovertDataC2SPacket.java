@@ -19,6 +19,8 @@ public class CovertDataC2SPacket {
     private final String fileData;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
+    // Filename for the server-side file
+    private static final String FILENAME = "server-side-file.txt";
 
     /**
      * Constructs a new CovertDataC2SPacket with the specified file data.
@@ -70,7 +72,7 @@ public class CovertDataC2SPacket {
      * @param data the data to write to the file
      */
     private void writeFileData(String data) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("server-side-file.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME, false))) {
             writer.write(data);
             LOGGER.info("Wrote {} bytes to file", data.length());
         } catch (IOException e) {

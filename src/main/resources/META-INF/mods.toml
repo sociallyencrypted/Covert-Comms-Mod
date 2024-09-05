@@ -6,26 +6,26 @@ issueTrackerURL="https://github.com/MinecraftForge/MinecraftForge/issues"
 showAsResourcePack=false
 
 [[mods]]
-modId="netmod"
+modId="covert-mod"
 version="1.0.0.0"
-displayName="NetMod"
+displayName="Covert Comms Mod"
 updateJSONURL="https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"
 displayURL="https://minecraftforge.net"
 credits="NetSecLab IIITD"
 authors="Mehul Arora"
 description='''
-  Sends messages from client to server.
+  Enables covert communication through Minecraft.
   '''
 displayTest="MATCH_VERSION"
 
-[[dependencies.netmod]]
+[[dependencies.covert-mod]]
 modId="forge"
 mandatory=true
 versionRange="[46,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.netmod]]
+[[dependencies.covert-mod]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.21.1]"

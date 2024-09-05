@@ -1,7 +1,7 @@
-package com.example.netmod;
+package com.example.covertmod;
 
-import com.example.netmod.events.ClientEvents;
-import com.example.netmod.networking.ModMessages;
+import com.example.covertmod.events.ClientEvents;
+import com.example.covertmod.networking.ModMessages;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -13,12 +13,12 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(NetMod.MODID)
-public class NetMod {
-    public static final String MODID = "netmod";
+@Mod(CovertMod.MODID)
+public class CovertMod {
+    public static final String MODID = "covert-mod";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public NetMod(FMLJavaModLoadingContext context) {
+    public CovertMod(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);

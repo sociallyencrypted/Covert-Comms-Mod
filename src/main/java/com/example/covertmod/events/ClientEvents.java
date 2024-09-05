@@ -1,6 +1,6 @@
-package com.example.netmod.events;
+package com.example.covertmod.events;
 
-import com.example.netmod.utils.FifoReaderThread;
+import com.example.covertmod.utils.FifoReaderThread;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 
-import static com.example.netmod.NetMod.MODID;
+import static com.example.covertmod.CovertMod.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEvents {

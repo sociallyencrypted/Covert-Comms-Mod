@@ -1,4 +1,4 @@
-package com.example.netmod.networking.packet;
+package com.example.covertmod.networking.packet;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.FriendlyByteBuf;

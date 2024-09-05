@@ -1,7 +1,7 @@
-package com.example.netmod.networking;
+package com.example.covertmod.networking;
 
-import com.example.netmod.NetMod;
-import com.example.netmod.networking.packet.HelloWorldC2SPacket;
+import com.example.covertmod.CovertMod;
+import com.example.covertmod.networking.packet.HelloWorldC2SPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.*;
 
@@ -16,7 +16,7 @@ public class ModMessages {
     }
 
     public static void register(){
-        instance = ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(NetMod.MODID, CHANNEL_NAME))
+        instance = ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(CovertMod.MODID, CHANNEL_NAME))
                 .networkProtocolVersion(PROTOCOL_VERSION)
                 .clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
                 .serverAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))

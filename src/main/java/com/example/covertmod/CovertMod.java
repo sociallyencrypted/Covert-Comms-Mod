@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 
 @Mod(CovertMod.MODID)
 public class CovertMod {
-    public static final String MODID = "covert-mod";
+    public static final String MODID = "covertmod";
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public CovertMod(FMLJavaModLoadingContext context) {

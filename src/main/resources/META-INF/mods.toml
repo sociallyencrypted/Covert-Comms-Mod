@@ -6,7 +6,7 @@ issueTrackerURL="https://github.com/MinecraftForge/MinecraftForge/issues"
 showAsResourcePack=false
 
 [[mods]]
-modId="covert-mod"
+modId="covertmod"
 version="1.0.0.0"
 displayName="Covert Comms Mod"
 updateJSONURL="https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json"
@@ -18,14 +18,14 @@ description='''
   '''
 displayTest="MATCH_VERSION"
 
-[[dependencies.covert-mod]]
+[[dependencies.covertmod]]
 modId="forge"
 mandatory=true
 versionRange="[46,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.covert-mod]]
+[[dependencies.covertmod]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.21.1]"

@@ -37,7 +37,7 @@ public class CovertDataC2SPacket {
      * @param buf the buffer containing the packet data
      */
     public CovertDataC2SPacket(FriendlyByteBuf buf) {
-        this.fileData = buf.readUtf(32767);
+        this.fileData = buf.readUtf();
     }
 
     /**

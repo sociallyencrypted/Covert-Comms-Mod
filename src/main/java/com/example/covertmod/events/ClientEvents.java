@@ -9,6 +9,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import static com.example.covertmod.CovertMod.MODID;
 
 /**
@@ -19,7 +23,7 @@ import static com.example.covertmod.CovertMod.MODID;
 public class ClientEvents {
 
     // Path to the FIFO file
-    private static final String FIFO_FILE_PATH = "/Users/sociallyencrypted/try1.txt";
+    private static String FIFO_FILE_PATH;
     // Command to start the FIFO reader thread
     private static final String START_COMMAND = "hello";
     // Command to stop the FIFO reader thread
@@ -28,6 +32,19 @@ public class ClientEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
     // Instance of the FIFO reader thread
     private static FifoReaderThread fifoReaderThread;
+
+    static {
+        try (InputStream input = ClientEvents.class.getClassLoader().getResourceAsStream("config.properties")) {
+            if (input == null) {
+                throw new IOException("config.properties file not found");
+            }
+            Properties prop = new Properties();
+            prop.load(input);
+            FIFO_FILE_PATH = prop.getProperty("SENDING_FIFO_PATH");
+        } catch (IOException ex) {
+            LOGGER.error("Error reading config.properties file: {}", ex.getMessage());
+        }
+    }
 
     /**
      * Handles the client setup event.

@@ -213,3 +213,22 @@ sourceSets.each {
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
+
+// Compile C code for writing data to FIFO
+tasks.register('compileC', Exec) {
+    def outputDir = layout.buildDirectory.dir("bin").get().asFile
+    def outputBinary = new File(outputDir, "write_to_fifo")
+
+    inputs.file 'src/main/java/com/example/covertmod/utils/write_to_fifo.c'
+    outputs.file outputBinary
+
+    doFirst {
+        outputDir.mkdirs()
+    }
+
+    commandLine 'gcc', 'src/main/java/com/example/covertmod/utils/write_to_fifo.c', '-o', outputBinary
+}
+
+compileJava.dependsOn compileC
+
+sourceSets.main.output.dir(layout.buildDirectory.dir("bin"), builtBy: 'compileC')

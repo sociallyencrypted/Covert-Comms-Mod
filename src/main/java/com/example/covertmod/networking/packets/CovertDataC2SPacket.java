@@ -1,15 +1,12 @@
 package com.example.covertmod.networking.packets;
 
+import com.example.covertmod.networking.ModMessages;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import org.slf4j.Logger;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * This class represents a packet that contains covert data sent from the client to the server.
@@ -19,8 +16,6 @@ public class CovertDataC2SPacket {
     private final String fileData;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
-    // Filename for the server-side file
-    private static final String FILENAME = "server-side-file.txt";
 
     /**
      * Constructs a new CovertDataC2SPacket with the specified file data.
@@ -60,23 +55,10 @@ public class CovertDataC2SPacket {
             if (player != null) {
                 // Send a system message to the player with the number of bytes read
                 player.sendSystemMessage(Component.translatable("Bytes read: " + this.fileData.length()));
-                // Write the file data to a server-side file
-                writeFileData(this.fileData);
+                // Craft a CovertDataS2CPacket and send it to all clients
+                CovertDataS2CPacket packet = new CovertDataS2CPacket(this.fileData);
+                ModMessages.sendToPlayers(packet);
             }
         });
-    }
-
-    /**
-     * Writes the provided data to a file on the server.
-     *
-     * @param data the data to write to the file
-     */
-    private void writeFileData(String data) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILENAME, false))) {
-            writer.write(data);
-            LOGGER.info("Wrote {} bytes to file", data.length());
-        } catch (IOException e) {
-            LOGGER.error("Error writing data to file: {}", e.getMessage());
-        }
     }
 }

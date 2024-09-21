@@ -13,7 +13,7 @@ import com.example.covertmod.networking.ModMessages;
 
 public class CovertDataS2CPacket {
     // The data to be transmitted
-    private final String covertData;
+    private final byte[] covertData;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
     // Filename for the receiving FIFO
@@ -25,7 +25,7 @@ public class CovertDataS2CPacket {
      *
      * @param covertData the data to be transmitted
      */
-    public CovertDataS2CPacket(String covertData) {
+    public CovertDataS2CPacket(byte[] covertData) {
         this.covertData = covertData;
     }
 
@@ -35,7 +35,8 @@ public class CovertDataS2CPacket {
      * @param buf the buffer containing the packet data
      */
     public CovertDataS2CPacket(FriendlyByteBuf buf) {
-        this.covertData = buf.readUtf();
+        this.covertData = buf.readByteArray();
+        LOGGER.info("Decoded covert data: {}", covertData);
     }
 
     /**
@@ -44,7 +45,8 @@ public class CovertDataS2CPacket {
      * @param buf the buffer to write the packet data to
      */
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(this.covertData);
+        LOGGER.info("Encoded covert data: {}", covertData);
+        buf.writeByteArray(this.covertData);
     }
 
     /**
@@ -54,7 +56,7 @@ public class CovertDataS2CPacket {
      */
     public void handle(CustomPayloadEvent.Context context) {
         context.enqueueWork(() -> {
-            LOGGER.info("Received covert data of length {}", covertData.length());
+            LOGGER.info("Received covert data of length {}", covertData.length);
             LOGGER.info("Data: {}", covertData);
             writeFileData(covertData);
         });
@@ -66,11 +68,13 @@ public class CovertDataS2CPacket {
      *
      * @param data the data to write to the file
      */
-    private void writeFileData(String data) {
+    private void writeFileData(byte[] data) {
         try {
             Process process = ModMessages.getFifoWriterProcess();
             writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-            writer.write(data);
+            for (byte b : data) {
+                writer.write(b);
+            }
             writer.flush();
         } catch (IOException e) {
             LOGGER.error("Error writing data to FIFO: {}", e.getMessage());

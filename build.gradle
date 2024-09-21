@@ -217,16 +217,21 @@ sourceSets.each {
 // Compile C code for writing data to FIFO
 tasks.register('compileC', Exec) {
     def outputDir = layout.buildDirectory.dir("bin").get().asFile
-    def outputBinary = new File(outputDir, "write_to_fifo")
+    def outputBinaryWrite = new File(outputDir, "write_to_fifo")
+    def outputBinaryRead = new File(outputDir, "read_from_fifo")
 
     inputs.file 'src/main/java/com/example/covertmod/utils/write_to_fifo.c'
-    outputs.file outputBinary
+    outputs.file outputBinaryWrite
+
+    inputs.file 'src/main/java/com/example/covertmod/utils/read_from_fifo.c'
+    outputs.file outputBinaryRead
 
     doFirst {
         outputDir.mkdirs()
     }
 
-    commandLine 'gcc', 'src/main/java/com/example/covertmod/utils/write_to_fifo.c', '-o', outputBinary
+    commandLine 'gcc', 'src/main/java/com/example/covertmod/utils/write_to_fifo.c', '-o', outputBinaryWrite
+    commandLine 'gcc', 'src/main/java/com/example/covertmod/utils/read_from_fifo.c', '-o', outputBinaryRead
 }
 
 compileJava.dependsOn compileC

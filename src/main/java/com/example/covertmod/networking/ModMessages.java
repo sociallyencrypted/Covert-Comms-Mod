@@ -4,6 +4,7 @@ import com.example.covertmod.CovertMod;
 import com.example.covertmod.networking.packets.CovertDataC2SPacket;
 import com.example.covertmod.networking.packets.CovertDataS2CPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.*;
 
 import java.io.IOException;
@@ -13,11 +14,14 @@ import java.util.Properties;
 public class ModMessages {
     private static String CHANNEL_NAME;
     private static int PROTOCOL_VERSION;
-    private static String BINARY_PATH;
-    private static String FILENAME;
+    private static String BINARY_WRITE_PATH;
+    private static String BINARY_READ_PATH;
+    private static String RECEIVING_FIFO_PATH;
+    private static String SENDING_FIFO_PATH;
     private static SimpleChannel instance;
     private static int packetId = 0;
     private static Process fifoWriterProcess;
+    private static Process fifoReaderProcess;
 
     static {
         try (InputStream input = ModMessages.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -25,8 +29,10 @@ public class ModMessages {
             prop.load(input);
             CHANNEL_NAME = prop.getProperty("CHANNEL_NAME");
             PROTOCOL_VERSION = Integer.parseInt(prop.getProperty("PROTOCOL_VERSION"));
-            BINARY_PATH = prop.getProperty("BINARY_PATH");
-            FILENAME = prop.getProperty("RECEIVING_FIFO_PATH");
+            BINARY_WRITE_PATH = prop.getProperty("BINARY_WRITE_PATH");
+            BINARY_READ_PATH = prop.getProperty("BINARY_READ_PATH");
+            RECEIVING_FIFO_PATH = prop.getProperty("RECEIVING_FIFO_PATH");
+            SENDING_FIFO_PATH = prop.getProperty("SENDING_FIFO_PATH");
         } catch (IOException ex) {
             System.err.println("Error reading config.properties file: " + ex.getMessage());
         }
@@ -66,8 +72,15 @@ public class ModMessages {
 
     public static Process getFifoWriterProcess() throws IOException {
         if (fifoWriterProcess == null) {
-            fifoWriterProcess = new ProcessBuilder(BINARY_PATH, FILENAME).start();
+            fifoWriterProcess = new ProcessBuilder(BINARY_WRITE_PATH, RECEIVING_FIFO_PATH).start();
         }
         return fifoWriterProcess;
+    }
+
+    public static Process getFifoReaderProcess() throws IOException {
+        if (fifoReaderProcess == null) {
+            fifoReaderProcess = new ProcessBuilder(BINARY_READ_PATH, SENDING_FIFO_PATH).start();
+        }
+        return fifoReaderProcess;
     }
 }

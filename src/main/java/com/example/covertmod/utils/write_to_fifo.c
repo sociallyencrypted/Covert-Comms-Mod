@@ -25,10 +25,12 @@ int main(int argc, char *argv[]) {
 
     // Continuously read from stdin and write to the FIFO
     while (1) {
-        if (fgets(input_buffer, sizeof(input_buffer), stdin) == NULL) {
+//        if (fgets(input_buffer, sizeof(input_buffer), stdin) == NULL) {
+//            break;
+//        }
+        if (read(stdin, input_buffer, sizeof(input_buffer)) == 0) {
             break;
         }
-
         ssize_t bytes_written = write(fifo_fd, input_buffer, strlen(input_buffer));
         if (bytes_written == -1) {
             perror("write");

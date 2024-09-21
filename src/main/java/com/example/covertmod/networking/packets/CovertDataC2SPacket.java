@@ -13,7 +13,7 @@ import org.slf4j.Logger;
  */
 public class CovertDataC2SPacket {
     // The data read from the file
-    private final String fileData;
+    private final byte[] fileData;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -22,7 +22,7 @@ public class CovertDataC2SPacket {
      *
      * @param fileData the data read from the file
      */
-    public CovertDataC2SPacket(String fileData) {
+    public CovertDataC2SPacket(byte[] fileData) {
         this.fileData = fileData;
     }
 
@@ -32,7 +32,7 @@ public class CovertDataC2SPacket {
      * @param buf the buffer containing the packet data
      */
     public CovertDataC2SPacket(FriendlyByteBuf buf) {
-        this.fileData = buf.readUtf();
+        this.fileData = buf.readByteArray();
     }
 
     /**
@@ -41,7 +41,7 @@ public class CovertDataC2SPacket {
      * @param buf the buffer to write the packet data to
      */
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(this.fileData);
+        buf.writeByteArray(this.fileData);
     }
 
     /**
@@ -50,11 +50,12 @@ public class CovertDataC2SPacket {
      * @param context the context of the custom payload event
      */
     public void handle(CustomPayloadEvent.Context context) {
+        LOGGER.info("Data read from fifo: {}", this.fileData);
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null) {
                 // Send a system message to the player with the number of bytes read
-                player.sendSystemMessage(Component.translatable("Bytes read: " + this.fileData.length()));
+                player.sendSystemMessage(Component.translatable("Bytes read: " + this.fileData.length));
                 // Craft a CovertDataS2CPacket and send it to all clients
                 CovertDataS2CPacket packet = new CovertDataS2CPacket(this.fileData);
                 ModMessages.sendToPlayers(packet);

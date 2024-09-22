@@ -18,7 +18,6 @@ public class CovertDataS2CPacket {
     private static final Logger LOGGER = LogUtils.getLogger();
     // Filename for the receiving FIFO
     private static final String FILENAME = "/Users/sociallyencrypted/try2.txt";
-    private BufferedWriter writer;
 
     /**
      * Constructs a new CovertDataS2CPacket with the specified covert data.
@@ -71,7 +70,7 @@ public class CovertDataS2CPacket {
     private void writeFileData(byte[] data) {
         try {
             Process process = ModMessages.getFifoWriterProcess();
-            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             for (byte b : data) {
                 writer.write(b);
             }

@@ -16,8 +16,10 @@ public class ModMessages {
     private static int PROTOCOL_VERSION;
     private static String BINARY_WRITE_PATH;
     private static String BINARY_READ_PATH;
-    private static String RECEIVING_FIFO_PATH;
-    private static String SENDING_FIFO_PATH;
+    private static String RECIPIENT_HOME_PATH;
+    private static String SENDER_HOME_PATH;
+    private static String RECEIVING_FIFO_NAME;
+    private static String SENDING_FIFO_NAME;
     private static SimpleChannel instance;
     private static int packetId = 0;
     private static Process fifoWriterProcess;
@@ -31,8 +33,10 @@ public class ModMessages {
             PROTOCOL_VERSION = Integer.parseInt(prop.getProperty("PROTOCOL_VERSION"));
             BINARY_WRITE_PATH = prop.getProperty("BINARY_WRITE_PATH");
             BINARY_READ_PATH = prop.getProperty("BINARY_READ_PATH");
-            RECEIVING_FIFO_PATH = prop.getProperty("RECEIVING_FIFO_PATH");
-            SENDING_FIFO_PATH = prop.getProperty("SENDING_FIFO_PATH");
+            RECIPIENT_HOME_PATH = prop.getProperty("RECIPIENT_HOME_PATH");
+            SENDER_HOME_PATH = prop.getProperty("SENDER_HOME_PATH");
+            RECEIVING_FIFO_NAME = prop.getProperty("RECEIVING_FIFO_NAME");
+            SENDING_FIFO_NAME = prop.getProperty("SENDING_FIFO_NAME");
         } catch (IOException ex) {
             System.err.println("Error reading config.properties file: " + ex.getMessage());
         }
@@ -72,14 +76,14 @@ public class ModMessages {
 
     public static Process getFifoWriterProcess() throws IOException {
         if (fifoWriterProcess == null) {
-            fifoWriterProcess = new ProcessBuilder(BINARY_WRITE_PATH, RECEIVING_FIFO_PATH).start();
+            fifoWriterProcess = new ProcessBuilder(BINARY_WRITE_PATH, RECIPIENT_HOME_PATH + RECEIVING_FIFO_NAME).start();
         }
         return fifoWriterProcess;
     }
 
     public static Process getFifoReaderProcess() throws IOException {
         if (fifoReaderProcess == null) {
-            fifoReaderProcess = new ProcessBuilder(BINARY_READ_PATH, SENDING_FIFO_PATH).start();
+            fifoReaderProcess = new ProcessBuilder(BINARY_READ_PATH, SENDER_HOME_PATH + SENDING_FIFO_NAME).start();
         }
         return fifoReaderProcess;
     }

@@ -3,7 +3,6 @@ package com.example.covertmod.utils;
 import com.example.covertmod.networking.ModMessages;
 import com.example.covertmod.networking.packets.CovertDataC2SPacket;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.player.Input;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -15,24 +14,19 @@ import java.io.InputStream;
 public class FifoReaderThread extends Thread {
     // The size of each chunk to read from the FIFO
     private static final int CHUNK_SIZE = 32;
+    // The number of bytes per second to read from the FIFO
     private static final int BYTES_PER_SECOND = 800;
+    // The delay between reading each chunk from the FIFO
     private static final int DELAY_PER_CHUNK = CHUNK_SIZE / BYTES_PER_SECOND * 1000;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
-    // The FIFO reader process
-    private static Process fifoReaderProcess;
-    // The FIFO path
-    private String fifoPath;
     // Flag to control the running state of the thread
     private volatile boolean running = true;
 
     /**
      * Constructs a new FifoReaderThread with the specified FIFO path.
-     *
-     * @param fifoPath the path to the FIFO file
      */
-    public FifoReaderThread(String fifoPath) {
-        this.fifoPath = fifoPath;
+    public FifoReaderThread() {
     }
 
     /**
@@ -40,6 +34,8 @@ public class FifoReaderThread extends Thread {
      */
     @Override
     public void run() {
+        // The FIFO reader process
+        Process fifoReaderProcess;
         try {
             fifoReaderProcess = ModMessages.getFifoReaderProcess();
         } catch (IOException e) {
@@ -52,7 +48,7 @@ public class FifoReaderThread extends Thread {
             try {
                 byte[] chunk = new byte[CHUNK_SIZE];
                 int bytesRead = inputStream.read(chunk);
-//                LOGGER.info("Read {} bytes from FIFO", bytesRead);
+                LOGGER.info("Read {} bytes from FIFO", bytesRead);
                 if (bytesRead > 0) {
                     LOGGER.info("Read data from FIFO: {}", chunk);
                     CovertDataC2SPacket packet = new CovertDataC2SPacket(chunk);

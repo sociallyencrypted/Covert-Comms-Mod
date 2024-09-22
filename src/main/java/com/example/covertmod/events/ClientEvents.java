@@ -9,10 +9,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import static com.example.covertmod.CovertMod.MODID;
 
 /**
@@ -22,8 +18,6 @@ import static com.example.covertmod.CovertMod.MODID;
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEvents {
 
-    // Path to the FIFO file
-    private static String FIFO_FILE_PATH;
     // Command to start the FIFO reader thread
     private static final String START_COMMAND = "hello";
     // Command to stop the FIFO reader thread
@@ -32,19 +26,6 @@ public class ClientEvents {
     private static final Logger LOGGER = LogUtils.getLogger();
     // Instance of the FIFO reader thread
     private static FifoReaderThread fifoReaderThread;
-
-    static {
-        try (InputStream input = ClientEvents.class.getClassLoader().getResourceAsStream("config.properties")) {
-            if (input == null) {
-                throw new IOException("config.properties file not found");
-            }
-            Properties prop = new Properties();
-            prop.load(input);
-            FIFO_FILE_PATH = prop.getProperty("SENDING_FIFO_PATH");
-        } catch (IOException ex) {
-            LOGGER.error("Error reading config.properties file: {}", ex.getMessage());
-        }
-    }
 
     /**
      * Handles the client setup event.
@@ -86,7 +67,7 @@ public class ClientEvents {
             return;
         }
         LOGGER.info("Starting FIFO reader thread");
-        fifoReaderThread = new FifoReaderThread(FIFO_FILE_PATH);
+        fifoReaderThread = new FifoReaderThread();
         fifoReaderThread.start();
     }
 

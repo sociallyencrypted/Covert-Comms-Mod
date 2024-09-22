@@ -70,11 +70,14 @@ public class CovertDataS2CPacket {
     private void writeFileData(byte[] data) {
         try {
             Process process = ModMessages.getFifoWriterProcess();
+            /* PROBLEMATIC CODE */
+            // TODO: FIX THIS!
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             for (byte b : data) {
                 writer.write(b);
             }
             writer.flush();
+            /* PROBLEMATIC CODE */
         } catch (IOException e) {
             LOGGER.error("Error writing data to FIFO: {}", e.getMessage());
         }

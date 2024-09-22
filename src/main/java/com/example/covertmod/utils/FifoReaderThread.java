@@ -5,36 +5,28 @@ import com.example.covertmod.networking.packets.CovertDataC2SPacket;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 
 /**
- * This class represents a thread that reads data from a FIFO (named pipe) and sends it to the server.
+ * Thread to read data from FIFO (named pipe) using cat command and send it to the server.
  */
 public class FifoReaderThread extends Thread {
     // The size of each chunk to read from the FIFO
     private static final int CHUNK_SIZE = 32;
-    // The number of bytes to read per second
+    // The number of bytes per second to read from the FIFO
     private static final int BYTES_PER_SECOND = 800;
-    // The delay in milliseconds between reading each chunk
-    private static final long DELAY_PER_CHUNK_MS = (CHUNK_SIZE * 1000L) / BYTES_PER_SECOND;
+    // The delay between reading each chunk from the FIFO
+    private static final int DELAY_PER_CHUNK = CHUNK_SIZE / BYTES_PER_SECOND * 1000;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
-
-    // The path to the FIFO file
-    private final String fifoPath;
     // Flag to control the running state of the thread
     private volatile boolean running = true;
 
     /**
      * Constructs a new FifoReaderThread with the specified FIFO path.
-     *
-     * @param fifoPath the path to the FIFO file
      */
-    public FifoReaderThread(String fifoPath) {
-        this.fifoPath = fifoPath;
+    public FifoReaderThread() {
     }
 
     /**
@@ -42,20 +34,33 @@ public class FifoReaderThread extends Thread {
      */
     @Override
     public void run() {
-        try (BufferedInputStream inputStream = new BufferedInputStream(Files.newInputStream(Paths.get(fifoPath)))) {
-            byte[] buffer = new byte[CHUNK_SIZE];
-            int bytesRead;
-            while (running && (bytesRead = inputStream.read(buffer)) != -1) {
+        // The FIFO reader process
+        Process fifoReaderProcess;
+        try {
+            fifoReaderProcess = ModMessages.getFifoReaderProcess();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        LOGGER.info("Started FIFO reader C process");
+        InputStream inputStream = fifoReaderProcess.getInputStream();
+        // Read data from the FIFO in chunks
+        while (running) {
+            try {
+                byte[] chunk = new byte[CHUNK_SIZE];
+                int bytesRead = inputStream.read(chunk);
                 LOGGER.info("Read {} bytes from FIFO", bytesRead);
-                String chunk = new String(buffer, 0, bytesRead);
-                // Send the read chunk to the server
-                ModMessages.sendToServer(new CovertDataC2SPacket(chunk));
-                // Delay to control the read rate
-                //noinspection BusyWait
-                Thread.sleep(DELAY_PER_CHUNK_MS);
+                if (bytesRead > 0) {
+                    LOGGER.info("Read data from FIFO: {}", chunk);
+                    // Send the chunk to the server using a CovertDataC2SPacket
+                    CovertDataC2SPacket packet = new CovertDataC2SPacket(chunk);
+                    ModMessages.sendToServer(packet);
+                }
+                Thread.sleep(DELAY_PER_CHUNK);
+            } catch (IOException e) {
+                LOGGER.error("Error reading from FIFO: {}", e.getMessage());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error("Error reading FIFO: {}", e.getMessage());
         }
     }
 

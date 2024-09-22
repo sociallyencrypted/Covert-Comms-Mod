@@ -5,27 +5,23 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import org.slf4j.Logger;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import com.example.covertmod.networking.ModMessages;
 
 public class CovertDataS2CPacket {
     // The data to be transmitted
-    private final String covertData;
+    private final byte[] covertData;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
-    // Filename for the receiving FIFO
-    private static final String FILENAME = "/Users/sociallyencrypted/try2.txt";
-    private BufferedWriter writer;
 
     /**
      * Constructs a new CovertDataS2CPacket with the specified covert data.
      *
      * @param covertData the data to be transmitted
      */
-    public CovertDataS2CPacket(String covertData) {
+    public CovertDataS2CPacket(byte[] covertData) {
         this.covertData = covertData;
     }
 
@@ -35,7 +31,8 @@ public class CovertDataS2CPacket {
      * @param buf the buffer containing the packet data
      */
     public CovertDataS2CPacket(FriendlyByteBuf buf) {
-        this.covertData = buf.readUtf();
+        this.covertData = buf.readByteArray();
+        LOGGER.info("Decoded covert data: {}", covertData);
     }
 
     /**
@@ -44,7 +41,7 @@ public class CovertDataS2CPacket {
      * @param buf the buffer to write the packet data to
      */
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(this.covertData);
+        buf.writeByteArray(this.covertData);
     }
 
     /**
@@ -54,7 +51,7 @@ public class CovertDataS2CPacket {
      */
     public void handle(CustomPayloadEvent.Context context) {
         context.enqueueWork(() -> {
-            LOGGER.info("Received covert data of length {}", covertData.length());
+            LOGGER.info("Received covert data of length {}", covertData.length);
             LOGGER.info("Data: {}", covertData);
             writeFileData(covertData);
         });
@@ -66,12 +63,12 @@ public class CovertDataS2CPacket {
      *
      * @param data the data to write to the file
      */
-    private void writeFileData(String data) {
+    private void writeFileData(byte[] data) {
         try {
             Process process = ModMessages.getFifoWriterProcess();
-            writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-            writer.write(data);
-            writer.flush();
+            BufferedOutputStream outputStream = new BufferedOutputStream(process.getOutputStream());
+            outputStream.write(data);
+            outputStream.flush();
         } catch (IOException e) {
             LOGGER.error("Error writing data to FIFO: {}", e.getMessage());
         }

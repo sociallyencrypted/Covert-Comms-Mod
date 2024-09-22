@@ -5,9 +5,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import org.slf4j.Logger;
 
-import java.io.BufferedWriter;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 
 import com.example.covertmod.networking.ModMessages;
 
@@ -16,8 +15,6 @@ public class CovertDataS2CPacket {
     private final byte[] covertData;
     // Logger instance for logging events
     private static final Logger LOGGER = LogUtils.getLogger();
-    // Filename for the receiving FIFO
-    private static final String FILENAME = "/Users/sociallyencrypted/try2.txt";
 
     /**
      * Constructs a new CovertDataS2CPacket with the specified covert data.
@@ -44,7 +41,6 @@ public class CovertDataS2CPacket {
      * @param buf the buffer to write the packet data to
      */
     public void toBytes(FriendlyByteBuf buf) {
-        LOGGER.info("Encoded covert data: {}", covertData);
         buf.writeByteArray(this.covertData);
     }
 
@@ -70,14 +66,9 @@ public class CovertDataS2CPacket {
     private void writeFileData(byte[] data) {
         try {
             Process process = ModMessages.getFifoWriterProcess();
-            /* PROBLEMATIC CODE */
-            // TODO: FIX THIS!
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-            for (byte b : data) {
-                writer.write(b);
-            }
-            writer.flush();
-            /* PROBLEMATIC CODE */
+            BufferedOutputStream outputStream = new BufferedOutputStream(process.getOutputStream());
+            outputStream.write(data);
+            outputStream.flush();
         } catch (IOException e) {
             LOGGER.error("Error writing data to FIFO: {}", e.getMessage());
         }

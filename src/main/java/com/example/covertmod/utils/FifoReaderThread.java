@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * This class represents a thread that reads data from a FIFO (named pipe) and sends it to the server.
+ * Thread to read data from FIFO (named pipe) using cat command and send it to the server.
  */
 public class FifoReaderThread extends Thread {
     // The size of each chunk to read from the FIFO
@@ -43,7 +43,7 @@ public class FifoReaderThread extends Thread {
         }
         LOGGER.info("Started FIFO reader C process");
         InputStream inputStream = fifoReaderProcess.getInputStream();
-        // read 32 bit chunk from the fifo and send it as a packet
+        // Read data from the FIFO in chunks
         while (running) {
             try {
                 byte[] chunk = new byte[CHUNK_SIZE];
@@ -51,6 +51,7 @@ public class FifoReaderThread extends Thread {
                 LOGGER.info("Read {} bytes from FIFO", bytesRead);
                 if (bytesRead > 0) {
                     LOGGER.info("Read data from FIFO: {}", chunk);
+                    // Send the chunk to the server using a CovertDataC2SPacket
                     CovertDataC2SPacket packet = new CovertDataC2SPacket(chunk);
                     ModMessages.sendToServer(packet);
                 }

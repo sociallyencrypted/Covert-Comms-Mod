@@ -50,7 +50,6 @@ public class CovertDataC2SPacket {
      * @param context the context of the custom payload event
      */
     public void handle(CustomPayloadEvent.Context context) {
-        LOGGER.info("Data read from fifo: {}", this.fileData);
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
             if (player != null) {

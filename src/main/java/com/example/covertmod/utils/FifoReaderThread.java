@@ -48,6 +48,11 @@ public class FifoReaderThread extends Thread {
             try {
                 byte[] chunk = new byte[CHUNK_SIZE];
                 int bytesRead = inputStream.read(chunk);
+                if (bytesRead < chunk.length) {
+                    byte[] trimmedChunk = new byte[bytesRead];
+                    System.arraycopy(chunk, 0, trimmedChunk, 0, bytesRead);
+                    chunk = trimmedChunk;
+                }
                 LOGGER.info("Read {} bytes from FIFO", bytesRead);
                 if (bytesRead > 0) {
                     LOGGER.info("Read data from FIFO: {}", chunk);
@@ -55,11 +60,9 @@ public class FifoReaderThread extends Thread {
                     CovertDataC2SPacket packet = new CovertDataC2SPacket(chunk);
                     ModMessages.sendToServer(packet);
                 }
-                Thread.sleep(DELAY_PER_CHUNK);
+//                Thread.sleep(DELAY_PER_CHUNK);
             } catch (IOException e) {
                 LOGGER.error("Error reading from FIFO: {}", e.getMessage());
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         }
     }

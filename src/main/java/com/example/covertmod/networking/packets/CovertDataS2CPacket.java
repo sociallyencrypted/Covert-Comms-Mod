@@ -32,7 +32,6 @@ public class CovertDataS2CPacket {
      */
     public CovertDataS2CPacket(FriendlyByteBuf buf) {
         this.covertData = buf.readByteArray();
-        LOGGER.info("Decoded covert data: {}", covertData);
     }
 
     /**

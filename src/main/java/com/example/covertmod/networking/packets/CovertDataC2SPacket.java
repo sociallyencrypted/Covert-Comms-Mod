@@ -60,5 +60,6 @@ public class CovertDataC2SPacket {
                 ModMessages.sendToPlayers(packet);
             }
         });
+        context.setPacketHandled(true);
     }
 }
